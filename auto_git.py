@@ -1,25 +1,21 @@
+import os
 import subprocess
 import time
-from datetime import datetime
 
 def git_auto_commit():
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    try:
-        # Check for changes
-        subprocess.run(["git", "diff", "--quiet"], check=True)
-        print(f"[{now}] No changes to commit.")
-    except subprocess.CalledProcessError:
-        # Stage all changes
-        subprocess.run(["git", "add", "."])
+    # Get the current working directory
+    repo_path = os.getcwd()
 
-        # Commit changes
-        commit_message = f"Auto-commit: {now}"
-        subprocess.run(["git", "commit", "-m", commit_message])
-        print(f"[{now}] Committed changes.")
+    # Git commands to stage all changes, commit, and push
+    commands = [
+        ["git", "-C", repo_path, "add", "."],
+        ["git", "-C", repo_path, "commit", "-m", "Auto-commit"],
+        ["git", "-C", repo_path, "push"]
+    ]
 
-        # Push changes (optional)
-        # subprocess.run(["git", "push"])
+    for cmd in commands:
+        subprocess.run(cmd)
 
 while True:
     git_auto_commit()
-    time.sleep(3600) # Sleep for 1 hour
+    time.sleep(3600)  # Sleep for 1 hour
